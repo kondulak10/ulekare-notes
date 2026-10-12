@@ -1,5 +1,6 @@
 import type { Pool } from 'mariadb'
-import type { ListNotesQuery, Note, Priority } from '@notes/shared'
+import type { Priority } from '@notes/shared'
+import type { Note, NoteFilter } from './note.ts'
 import type { NoteRepository } from './note.repository.ts'
 
 type NoteRow = {
@@ -13,8 +14,8 @@ type NoteRow = {
 
 const COLUMNS = 'id, title, content, priority, created_at, updated_at'
 
-function utcToIso(value: string): string {
-  return new Date(`${value.replace(' ', 'T')}Z`).toISOString()
+function utcToDate(value: string): Date {
+  return new Date(`${value.replace(' ', 'T')}Z`)
 }
 
 function toNote(row: NoteRow): Note {
@@ -23,22 +24,22 @@ function toNote(row: NoteRow): Note {
     title: row.title,
     content: row.content,
     priority: row.priority,
-    createdAt: utcToIso(row.created_at),
-    updatedAt: utcToIso(row.updated_at),
+    createdAt: utcToDate(row.created_at),
+    updatedAt: utcToDate(row.updated_at),
   }
 }
 
 export class MariaDbNoteRepository implements NoteRepository {
-  private readonly pool: Pool
+  private readonly db: Pick<Pool, 'query'>
 
-  constructor(pool: Pool) {
-    this.pool = pool
+  constructor(db: Pick<Pool, 'query'>) {
+    this.db = db
   }
 
-  async findAll(filter: ListNotesQuery): Promise<Note[]> {
+  async findAll(filter: NoteFilter): Promise<Note[]> {
     const where = filter.priority ? 'WHERE priority = ?' : ''
     const params = filter.priority ? [filter.priority] : []
-    const rows: NoteRow[] = await this.pool.query(
+    const rows: NoteRow[] = await this.db.query(
       `SELECT ${COLUMNS} FROM notes ${where} ORDER BY updated_at DESC, id DESC`,
       params,
     )

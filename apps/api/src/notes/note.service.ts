@@ -1,4 +1,4 @@
-import type { ListNotesQuery, Note } from '@notes/shared'
+import type { Note, NoteFilter } from './note.ts'
 import type { NoteRepository } from './note.repository.ts'
 
 export class NoteService {
@@ -8,7 +8,7 @@ export class NoteService {
     this.notes = notes
   }
 
-  list(query: ListNotesQuery): Promise<Note[]> {
-    return this.notes.findAll(query)
+  list(filter: NoteFilter): Promise<Note[]> {
+    return this.notes.findAll(filter)
   }
 }

@@ -1,11 +1,11 @@
-import { createPool } from 'mariadb'
 import { createApp } from './app.ts'
 import { loadConfig } from './config.ts'
+import { createDbPool } from './db.ts'
 import { MariaDbNoteRepository } from './notes/mariadb-note.repository.ts'
 import { NoteService } from './notes/note.service.ts'
 
 const config = loadConfig()
-const pool = createPool({ ...config.db, connectionLimit: 5, timezone: 'Z', dateStrings: true })
+const pool = createDbPool(config.db)
 
 const noteService = new NoteService(new MariaDbNoteRepository(pool))
 const app = createApp({ noteService })

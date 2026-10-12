@@ -1,5 +1,5 @@
-import type { ListNotesQuery, Note } from '@notes/shared'
+import type { Note, NoteFilter } from './note.ts'
 
 export interface NoteRepository {
-  findAll(filter: ListNotesQuery): Promise<Note[]>
+  findAll(filter: NoteFilter): Promise<Note[]>
 }

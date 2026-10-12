@@ -1,12 +1,14 @@
 import request from 'supertest'
 import { describe, expect, it } from 'vitest'
-import type { Note } from '@notes/shared'
+import type { Note as NoteDto } from '@notes/shared'
 import { createApp } from '../src/app.ts'
+import type { Note } from '../src/notes/note.ts'
 import { NoteService } from '../src/notes/note.service.ts'
 import { InMemoryNoteRepository } from './in-memory-note.repository.ts'
 
 function note(id: number, priority: Note['priority'], updatedAt: string): Note {
-  return { id, title: `Note ${id}`, content: '', priority, createdAt: updatedAt, updatedAt }
+  const date = new Date(updatedAt)
+  return { id, title: `Note ${id}`, content: '', priority, createdAt: date, updatedAt: date }
 }
 
 function appWith(notes: Note[]) {
@@ -23,12 +25,17 @@ describe('GET /api/notes', () => {
   it('lists all notes, most recently updated first', async () => {
     const res = await request(appWith(notes)).get('/api/notes')
     expect(res.status).toBe(200)
-    expect(res.body.map((n: Note) => n.id)).toEqual([2, 3, 1])
+    expect(res.body.map((n: NoteDto) => n.id)).toEqual([2, 3, 1])
+  })
+
+  it('serializes dates as ISO strings', async () => {
+    const res = await request(appWith(notes)).get('/api/notes')
+    expect(res.body[0]).toMatchObject({ id: 2, updatedAt: '2026-10-03T10:00:00.000Z' })
   })
 
   it('filters by priority', async () => {
     const res = await request(appWith(notes)).get('/api/notes?priority=high')
-    expect(res.body.map((n: Note) => n.id)).toEqual([2, 3])
+    expect(res.body.map((n: NoteDto) => n.id)).toEqual([2, 3])
   })
 
   it('rejects an unknown priority', async () => {
