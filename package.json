@@ -1,0 +1,22 @@
+{
+  "name": "notes",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace @notes/api & npm run dev --workspace @notes/web & wait",
+    "db:up": "docker compose up -d db",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2"
+  }
+}
