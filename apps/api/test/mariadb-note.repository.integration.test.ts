@@ -15,7 +15,7 @@ function toSqlUtc(date: Date): string {
 
 afterEach(async () => {
   await connection?.rollback()
-  connection?.release()
+  await connection?.release()
   connection = undefined
 })
 
@@ -28,7 +28,14 @@ noteRepositoryContract('MariaDbNoteRepository', async (notes: Note[]) => {
   for (const note of notes) {
     await connection.query(
       'INSERT INTO notes (id, title, content, priority, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
-      [note.id, note.title, note.content, note.priority, toSqlUtc(note.createdAt), toSqlUtc(note.updatedAt)],
+      [
+        note.id,
+        note.title,
+        note.content,
+        note.priority,
+        toSqlUtc(note.createdAt),
+        toSqlUtc(note.updatedAt),
+      ],
     )
   }
   return new MariaDbNoteRepository(connection)

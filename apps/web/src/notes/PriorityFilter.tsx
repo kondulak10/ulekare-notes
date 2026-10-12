@@ -13,7 +13,11 @@ export function PriorityFilter({ value, onChange }: Props) {
   ]
 
   return (
-    <div role="radiogroup" aria-label="Filtr podle priority" className="flex gap-1 rounded-lg bg-stone-200/70 p-1">
+    <div
+      role="radiogroup"
+      aria-label="Filtr podle priority"
+      className="flex gap-1 rounded-lg bg-stone-200/70 p-1"
+    >
       {options.map((option) => {
         const active = option.value === value
         return (

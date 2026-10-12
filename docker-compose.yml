@@ -7,12 +7,12 @@ services:
       MARIADB_PASSWORD: ${DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - "${DB_PORT}:3306"
+      - '${DB_PORT}:3306'
     volumes:
       - db-data:/var/lib/mysql
       - ./apps/api/db/migrations:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 5s
       timeout: 5s
       retries: 20
@@ -29,7 +29,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       API_PORT: 3000
     ports:
-      - "${API_PORT}:3000"
+      - '${API_PORT}:3000'
     depends_on:
       db:
         condition: service_healthy
@@ -39,7 +39,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     ports:
-      - "8080:80"
+      - '8080:80'
     depends_on:
       - api
 
