@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "e2e"
   ],
   "engines": {
     "node": ">=24"
@@ -17,7 +18,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "npm run test --workspaces --if-present",
-    "test:integration": "npm run test:integration --workspace @notes/api"
+    "test:integration": "npm run test:integration --workspace @notes/api",
+    "test:e2e": "npm run test:e2e --workspace @notes/e2e",
+    "test:e2e:ui": "npm run test:e2e:ui --workspace @notes/e2e",
+    "test:e2e:report": "npm run test:e2e:report --workspace @notes/e2e"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
