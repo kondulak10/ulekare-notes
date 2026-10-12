@@ -83,6 +83,8 @@ e2e/
 ```
 
 # Scope decisions
+Time spent: ~2h
+
 Limited application with missing critical parts:
 - No CI/CD (e.g. pull requests, tests)
 - No deployment (e.g. Vercel)
