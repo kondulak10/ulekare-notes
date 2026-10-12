@@ -28,4 +28,11 @@ export class InMemoryNoteRepository implements NoteRepository {
     this.notes.push(newNote)
     return newNote
   }
+
+  async delete(id: number): Promise<boolean> {
+    const index = this.notes.findIndex((note) => note.id === id)
+    if (index === -1) return false
+    this.notes.splice(index, 1)
+    return true
+  }
 }

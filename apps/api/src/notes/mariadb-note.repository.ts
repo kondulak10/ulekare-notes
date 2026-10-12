@@ -54,4 +54,11 @@ export class MariaDbNoteRepository implements NoteRepository {
     if (!row) throw new Error('Failed to create note')
     return toNote(row)
   }
+
+  async delete(id: number): Promise<boolean> {
+    const result: { affectedRows: number } = await this.db.query('DELETE FROM notes WHERE id = ?', [
+      id,
+    ])
+    return result.affectedRows > 0
+  }
 }

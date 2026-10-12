@@ -116,3 +116,38 @@ describe('POST /api/notes', () => {
     expect(list.body).toEqual([])
   })
 })
+
+describe('DELETE /api/notes/:id', () => {
+  const notes = [
+    note(1, 'low', '2026-10-01T10:00:00.000Z'),
+    note(2, 'high', '2026-10-02T10:00:00.000Z'),
+  ]
+
+  it('deletes the note and responds 204 with no body', async () => {
+    const app = appWith(notes)
+    const res = await request(app).delete('/api/notes/2')
+
+    expect(res.status).toBe(204)
+    expect(res.text).toBe('')
+    const list = await request(app).get('/api/notes')
+    expect(list.body.map((n: NoteDto) => n.id)).toEqual([1])
+  })
+
+  it('responds 404 for a note that does not exist', async () => {
+    const res = await request(appWith(notes)).delete('/api/notes/999')
+    expect(res.status).toBe(404)
+    expect(res.body).toEqual({ error: 'Note 999 not found' })
+  })
+
+  it('responds 404 when deleting the same note twice', async () => {
+    const app = appWith(notes)
+    await request(app).delete('/api/notes/1')
+    expect((await request(app).delete('/api/notes/1')).status).toBe(404)
+  })
+
+  it.each(['abc', '0', '-1', '1.5'])('rejects the invalid id %s with 400', async (id) => {
+    const res = await request(appWith(notes)).delete(`/api/notes/${id}`)
+    expect(res.status).toBe(400)
+    expect(res.body.fields.id).toBeDefined()
+  })
+})

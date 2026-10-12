@@ -85,5 +85,25 @@ export function noteRepositoryContract(name: string, withNotes: RepositoryFactor
         expect((await repo.findAll({ priority: 'high' })).map((n) => n.id)).toEqual([2])
       })
     })
+
+    describe('delete', () => {
+      it('removes the note and reports it was deleted', async () => {
+        const repo = await withNotes(all)
+        expect(await repo.delete(summer.id)).toBe(true)
+        expect((await repo.findAll({})).map((n) => n.id)).toEqual([4, 3, 1])
+      })
+
+      it('reports false for an unknown id and leaves other notes untouched', async () => {
+        const repo = await withNotes(all)
+        expect(await repo.delete(999)).toBe(false)
+        expect(await repo.findAll({})).toHaveLength(all.length)
+      })
+
+      it('cannot delete the same note twice', async () => {
+        const repo = await withNotes(all)
+        await repo.delete(winter.id)
+        expect(await repo.delete(winter.id)).toBe(false)
+      })
+    })
   })
 }

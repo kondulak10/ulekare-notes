@@ -1,9 +1,20 @@
 import type { Note } from '@notes/shared'
 import { PRIORITY_BADGE, PRIORITY_LABEL } from '#/notes/priority.ts'
+import { deleteNote } from '#/api/notes.ts'
+import { useQueryClient } from '@tanstack/react-query'
+import { notesKeys } from '#/notes/useNotes.ts'
 
 const dateFormat = new Intl.DateTimeFormat('cs-CZ', { dateStyle: 'medium', timeStyle: 'short' })
 
 export function NoteCard({ note }: { note: Note }) {
+  const queryClient = useQueryClient()
+
+  async function handleDelete() {
+    if (!window.confirm(`Opravdu smazat poznámku „${note.title}“?`)) return
+    await deleteNote(note.id)
+    await queryClient.invalidateQueries({ queryKey: notesKeys.all })
+  }
+
   return (
     <article className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
       <header className="flex items-start justify-between gap-3">
@@ -19,7 +30,10 @@ export function NoteCard({ note }: { note: Note }) {
       )}
       <footer className="mt-3 text-xs text-stone-400">
         Upraveno{' '}
-        <time dateTime={note.updatedAt}>{dateFormat.format(new Date(note.updatedAt))}</time>
+        <time dateTime={note.updatedAt}>{dateFormat.format(new Date(note.updatedAt))}</time>{' '}
+        <button type="button" onClick={() => void handleDelete()} className="font-medium underline">
+          Smazat
+        </button>
       </footer>
     </article>
   )

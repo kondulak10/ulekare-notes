@@ -20,3 +20,11 @@ export async function createNote(note: CreateNoteInput): Promise<Note> {
   if (!res.ok) throw new Error(`Failed to create note (${res.status})`)
   return noteSchema.parse(await res.json())
 }
+
+export async function deleteNote(id: number): Promise<number> {
+  const res = await fetch(`/api/notes/${id}`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(`Failed to delete note (${res.status})`)
+  return res.status
+}
