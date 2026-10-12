@@ -100,6 +100,15 @@ describe('POST /api/notes', () => {
     expect(res.status).toBe(400)
   })
 
+  it('rejects malformed JSON with 400 instead of a server error', async () => {
+    const res = await request(appWith([]))
+      .post('/api/notes')
+      .set('Content-Type', 'application/json')
+      .send('{"title": broken')
+    expect(res.status).toBe(400)
+    expect(res.body).toEqual({ error: 'Malformed JSON body' })
+  })
+
   it('does not store anything when validation fails', async () => {
     const app = appWith([])
     await request(app).post('/api/notes').send({ title: '' })

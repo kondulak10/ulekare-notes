@@ -1,6 +1,6 @@
 import { TITLE_MAX, type Priority } from '@notes/shared'
 import { PRIORITY_LABEL, PRIORITY_ORDER } from '#/notes/priority.ts'
-import { MainButtonStyle, SecondaryButtonStyle } from '#/shared/MainButton.tsx'
+import { MainButtonStyle, SecondaryButtonStyle } from '#/ui/MainButton'
 import { useEffect, useId, useState, type FormEvent } from 'react'
 import { createNote } from '#/api/notes.ts'
 import { notesKeys } from '#/notes/useNotes.ts'
@@ -35,14 +35,14 @@ export function CreateNote() {
       await createNote({ title, content, priority })
       await queryClient.invalidateQueries({ queryKey: notesKeys.all })
       setModalOpen(false)
-    } catch (error) {
-      console.error(error)
-      setError('Při vytváření poznámky došlo k chybě')
-    } finally {
       setTitle('')
       setContent('')
       setPriority('medium')
       setError('')
+    } catch (error) {
+      console.error(error)
+      setError('Při vytváření poznámky došlo k chybě')
+    } finally {
       setIsLoading(false)
     }
   }
@@ -78,7 +78,7 @@ export function CreateNote() {
               </button>
             </header>
 
-            <form onSubmit={(e) => handleSubmit(e)} className="grid gap-4">
+            <form onSubmit={(e) => void handleSubmit(e)} className="grid gap-4">
               <div className="grid gap-1.5">
                 <div className="flex items-baseline justify-between">
                   <label htmlFor={`${id}-title`} className="text-sm font-medium text-stone-700">
