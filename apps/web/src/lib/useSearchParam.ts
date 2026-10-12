@@ -5,7 +5,6 @@ function subscribe(onChange: () => void) {
   return () => window.removeEventListener('popstate', onChange)
 }
 
-// Keeps a piece of UI state in the URL, so a filtered view survives a reload and can be shared.
 export function useSearchParam(name: string): [string | null, (value: string | null) => void] {
   const value = useSyncExternalStore(subscribe, () =>
     new URLSearchParams(window.location.search).get(name),

@@ -5,7 +5,6 @@ import { PriorityFilter } from './notes/PriorityFilter.tsx'
 
 export default function App() {
   const [priorityParam, setPriorityParam] = useSearchParam('priority')
-  // An invalid ?priority= in the URL falls back to "all" instead of breaking the page
   const priority = prioritySchema.safeParse(priorityParam).data
 
   return (

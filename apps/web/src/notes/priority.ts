@@ -12,5 +12,4 @@ export const PRIORITY_BADGE: Record<Priority, string> = {
   low: 'bg-stone-200 text-stone-700',
 }
 
-// Display order for filters: most important first
 export const PRIORITY_ORDER: Priority[] = ['high', 'medium', 'low']

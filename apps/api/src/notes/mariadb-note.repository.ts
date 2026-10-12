@@ -7,14 +7,12 @@ type NoteRow = {
   title: string
   content: string
   priority: Priority
-  // DATETIME as 'YYYY-MM-DD HH:MM:SS.mmm' in UTC (pool uses dateStrings + session time_zone '+00:00')
   created_at: string
   updated_at: string
 }
 
 const COLUMNS = 'id, title, content, priority, created_at, updated_at'
 
-// Parsing ourselves keeps results independent of the Node process's local time zone
 function utcToIso(value: string): string {
   return new Date(`${value.replace(' ', 'T')}Z`).toISOString()
 }

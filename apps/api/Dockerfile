@@ -9,5 +9,4 @@ COPY apps/api apps/api
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
 EXPOSE 3000
-# Node 24 runs TypeScript directly (type stripping), so there is no build step
 CMD ["node", "src/index.ts"]

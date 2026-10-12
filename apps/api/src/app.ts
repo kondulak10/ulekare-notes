@@ -7,7 +7,6 @@ export type AppDeps = {
   noteService: NoteService
 }
 
-// Builds the HTTP app from already-constructed dependencies, so tests can pass fakes.
 export function createApp({ noteService }: AppDeps) {
   const app = express()
   app.use(express.json())

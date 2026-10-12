@@ -1,8 +1,5 @@
 import { z } from 'zod'
 
-// Single source of truth for the note contract: the API validates requests
-// with these schemas and the web app reuses them for its forms and types.
-
 export const PRIORITIES = ['low', 'medium', 'high'] as const
 export const prioritySchema = z.enum(PRIORITIES)
 export type Priority = z.infer<typeof prioritySchema>
@@ -33,7 +30,6 @@ export const createNoteSchema = z.object({
 })
 export type CreateNoteInput = z.infer<typeof createNoteSchema>
 
-// No defaults here: a partial update must not reset fields the client omitted.
 export const updateNoteSchema = z.object(noteFields).partial()
 export type UpdateNoteInput = z.infer<typeof updateNoteSchema>
 

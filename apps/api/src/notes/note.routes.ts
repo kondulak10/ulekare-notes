@@ -2,7 +2,6 @@ import { Router } from 'express'
 import { listNotesQuerySchema } from '@notes/shared'
 import type { NoteService } from './note.service.ts'
 
-// HTTP adapter only: parse and validate the request, call the service, shape the response.
 export function createNoteRouter(service: NoteService): Router {
   const router = Router()
 
