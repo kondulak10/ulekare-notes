@@ -1,5 +1,5 @@
-import type { Note, NoteFilter } from './note.ts'
-import type { NoteRepository } from './note.repository.ts'
+import type { CreateNote, Note, NoteFilter } from '#/notes/note.ts'
+import type { NoteRepository } from '#/notes/note.repository.ts'
 
 export class NoteService {
   private readonly notes: NoteRepository
@@ -10,5 +10,9 @@ export class NoteService {
 
   list(filter: NoteFilter): Promise<Note[]> {
     return this.notes.findAll(filter)
+  }
+
+  create(note: CreateNote): Promise<Note> {
+    return this.notes.create(note)
   }
 }

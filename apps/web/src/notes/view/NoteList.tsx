@@ -1,7 +1,7 @@
 import type { Priority } from '@notes/shared'
-import { NoteCard } from './NoteCard.tsx'
-import { PRIORITY_LABEL } from './priority.ts'
-import { useNotes } from './useNotes.ts'
+import { NoteCard } from '#/notes/view/NoteCard.tsx'
+import { PRIORITY_LABEL } from '#/notes/priority.ts'
+import { useNotes } from '#/notes/useNotes.ts'
 
 export function NoteList({ priority }: { priority: Priority | undefined }) {
   const { data: notes, isPending, isError, refetch } = useNotes({ priority })

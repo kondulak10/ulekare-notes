@@ -2,6 +2,10 @@
   "name": "@notes/api",
   "private": true,
   "type": "module",
+  "imports": {
+    "#/*": "./src/*",
+    "#test/*": "./test/*"
+  },
   "scripts": {
     "dev": "node --watch --env-file-if-exists=../../.env src/index.ts",
     "start": "node src/index.ts",

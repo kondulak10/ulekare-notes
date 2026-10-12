@@ -1,5 +1,5 @@
 import type { Priority } from '@notes/shared'
-import { PRIORITY_LABEL, PRIORITY_ORDER } from './priority.ts'
+import { PRIORITY_LABEL, PRIORITY_ORDER } from '#/notes/priority.ts'
 
 type Props = {
   value: Priority | undefined
@@ -27,7 +27,7 @@ export function PriorityFilter({ value, onChange }: Props) {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(option.value)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition cursor-pointer ${
               active ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-600 hover:text-stone-900'
             }`}
           >

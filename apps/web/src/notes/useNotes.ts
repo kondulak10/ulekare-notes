@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { ListNotesQuery } from '@notes/shared'
-import { fetchNotes } from '../api/notes.ts'
+import { fetchNotes } from '#/api/notes.ts'
 
 export const notesKeys = {
   all: ['notes'] as const,

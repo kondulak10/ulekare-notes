@@ -9,6 +9,12 @@ export type Note = {
   updatedAt: Date
 }
 
+export type CreateNote = {
+  title: string
+  content: string
+  priority: Priority
+}
+
 export type NoteFilter = {
   priority?: Priority
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { Note } from '../src/notes/note.ts'
-import type { NoteRepository } from '../src/notes/note.repository.ts'
+import type { CreateNote, Note } from '#/notes/note.ts'
+import type { NoteRepository } from '#/notes/note.repository.ts'
 
 export type RepositoryFactory = (notes: Note[]) => Promise<NoteRepository>
 
@@ -43,6 +43,47 @@ export function noteRepositoryContract(name: string, withNotes: RepositoryFactor
     it('returns notes with every field intact, timestamps as exact UTC instants', async () => {
       const repo = await withNotes([winter, summer])
       expect(await repo.findAll({})).toEqual([summer, winter])
+    })
+
+    describe('create', () => {
+      const input: CreateNote = { title: 'New note', content: 'Body', priority: 'high' }
+
+      it('returns the stored note with an id and current timestamps', async () => {
+        const repo = await withNotes([])
+        const before = Date.now()
+        const created = await repo.create(input)
+
+        expect(created).toMatchObject(input)
+        expect(created.id).toBeGreaterThan(0)
+        expect(created.createdAt).toEqual(created.updatedAt)
+        expect(Math.abs(created.createdAt.getTime() - before)).toBeLessThan(60_000)
+      })
+
+      it('makes the note visible to findAll exactly as returned', async () => {
+        const repo = await withNotes([])
+        const created = await repo.create(input)
+        expect(await repo.findAll({})).toEqual([created])
+      })
+
+      it('assigns an id no existing note has', async () => {
+        const repo = await withNotes(all)
+        const created = await repo.create(input)
+        expect(all.map((n) => n.id)).not.toContain(created.id)
+        expect(await repo.findAll({})).toHaveLength(all.length + 1)
+      })
+
+      it('lists the new note first, as the most recently updated', async () => {
+        const repo = await withNotes(all)
+        const created = await repo.create(input)
+        expect((await repo.findAll({}))[0]?.id).toBe(created.id)
+      })
+
+      it('respects the priority filter for created notes', async () => {
+        const repo = await withNotes(all)
+        const created = await repo.create({ ...input, priority: 'low' })
+        expect((await repo.findAll({ priority: 'low' })).map((n) => n.id)).toEqual([created.id, 1])
+        expect((await repo.findAll({ priority: 'high' })).map((n) => n.id)).toEqual([2])
+      })
     })
   })
 }

@@ -1,5 +1,5 @@
 import type { Note as NoteDto } from '@notes/shared'
-import type { Note } from './note.ts'
+import type { Note } from '#/notes/note.ts'
 
 export function toNoteDto(note: Note): NoteDto {
   return {

@@ -1,10 +1,10 @@
 import type { PoolConnection } from 'mariadb'
 import { afterAll, afterEach } from 'vitest'
-import { loadConfig } from '../src/config.ts'
-import { createDbPool } from '../src/db.ts'
-import type { Note } from '../src/notes/note.ts'
-import { MariaDbNoteRepository } from '../src/notes/mariadb-note.repository.ts'
-import { noteRepositoryContract } from './note-repository.contract.ts'
+import { loadConfig } from '#/config.ts'
+import { createDbPool } from '#/db.ts'
+import type { Note } from '#/notes/note.ts'
+import { MariaDbNoteRepository } from '#/notes/mariadb-note.repository.ts'
+import { noteRepositoryContract } from '#test/note-repository.contract.ts'
 
 const pool = createDbPool(loadConfig().db)
 let connection: PoolConnection | undefined

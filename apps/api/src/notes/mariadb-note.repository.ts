@@ -1,7 +1,7 @@
 import type { Pool } from 'mariadb'
 import type { Priority } from '@notes/shared'
-import type { Note, NoteFilter } from './note.ts'
-import type { NoteRepository } from './note.repository.ts'
+import type { CreateNote, Note, NoteFilter } from '#/notes/note.ts'
+import type { NoteRepository } from '#/notes/note.repository.ts'
 
 type NoteRow = {
   id: number
@@ -44,5 +44,14 @@ export class MariaDbNoteRepository implements NoteRepository {
       params,
     )
     return rows.map(toNote)
+  }
+
+  async create(note: CreateNote): Promise<Note> {
+    const [row]: NoteRow[] = await this.db.query(
+      `INSERT INTO notes (title, content, priority) VALUES (?, ?, ?) RETURNING ${COLUMNS}`,
+      [note.title, note.content, note.priority],
+    )
+    if (!row) throw new Error('Failed to create note')
+    return toNote(row)
   }
 }

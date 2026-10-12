@@ -1,7 +1,7 @@
 import express from 'express'
-import { errorHandler, notFound } from './http/error-handler.ts'
-import { createNoteRouter } from './notes/note.routes.ts'
-import type { NoteService } from './notes/note.service.ts'
+import { errorHandler, notFound } from '#/http/error-handler.ts'
+import { createNoteRouter } from '#/notes/note.routes.ts'
+import type { NoteService } from '#/notes/note.service.ts'
 
 export type AppDeps = {
   noteService: NoteService

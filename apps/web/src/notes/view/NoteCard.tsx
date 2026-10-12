@@ -1,5 +1,5 @@
 import type { Note } from '@notes/shared'
-import { PRIORITY_BADGE, PRIORITY_LABEL } from './priority.ts'
+import { PRIORITY_BADGE, PRIORITY_LABEL } from '#/notes/priority.ts'
 
 const dateFormat = new Intl.DateTimeFormat('cs-CZ', { dateStyle: 'medium', timeStyle: 'short' })
 

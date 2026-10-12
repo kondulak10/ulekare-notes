@@ -1,8 +1,8 @@
-import { createApp } from './app.ts'
-import { loadConfig } from './config.ts'
-import { createDbPool } from './db.ts'
-import { MariaDbNoteRepository } from './notes/mariadb-note.repository.ts'
-import { NoteService } from './notes/note.service.ts'
+import { createApp } from '#/app.ts'
+import { loadConfig } from '#/config.ts'
+import { createDbPool } from '#/db.ts'
+import { MariaDbNoteRepository } from '#/notes/mariadb-note.repository.ts'
+import { NoteService } from '#/notes/note.service.ts'
 
 const config = loadConfig()
 const pool = createDbPool(config.db)

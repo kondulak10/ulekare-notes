@@ -1,10 +1,10 @@
 import request from 'supertest'
 import { describe, expect, it } from 'vitest'
-import type { Note as NoteDto } from '@notes/shared'
-import { createApp } from '../src/app.ts'
-import type { Note } from '../src/notes/note.ts'
-import { NoteService } from '../src/notes/note.service.ts'
-import { InMemoryNoteRepository } from './in-memory-note.repository.ts'
+import { TITLE_MAX, type Note as NoteDto } from '@notes/shared'
+import { createApp } from '#/app.ts'
+import type { Note } from '#/notes/note.ts'
+import { NoteService } from '#/notes/note.service.ts'
+import { InMemoryNoteRepository } from '#test/in-memory-note.repository.ts'
 
 function note(id: number, priority: Note['priority'], updatedAt: string): Note {
   const date = new Date(updatedAt)
@@ -42,5 +42,68 @@ describe('GET /api/notes', () => {
     const res = await request(appWith(notes)).get('/api/notes?priority=urgent')
     expect(res.status).toBe(400)
     expect(res.body.fields.priority).toBeDefined()
+  })
+})
+
+describe('POST /api/notes', () => {
+  it('creates a note and responds 201 with it', async () => {
+    const res = await request(appWith([]))
+      .post('/api/notes')
+      .send({ title: 'Buy milk', content: 'Two litres', priority: 'high' })
+
+    expect(res.status).toBe(201)
+    expect(res.body).toMatchObject({
+      id: 1,
+      title: 'Buy milk',
+      content: 'Two litres',
+      priority: 'high',
+    })
+    expect(new Date(res.body.createdAt).toISOString()).toBe(res.body.createdAt)
+  })
+
+  it('makes the created note appear in the list', async () => {
+    const app = appWith([note(1, 'low', '2026-10-01T10:00:00.000Z')])
+    const created = await request(app).post('/api/notes').send({ title: 'Fresh' })
+
+    const list = await request(app).get('/api/notes')
+    expect(list.body.map((n: NoteDto) => n.id)).toEqual([created.body.id, 1])
+  })
+
+  it('applies defaults and trims the title', async () => {
+    const res = await request(appWith([])).post('/api/notes').send({ title: '  Only a title  ' })
+    expect(res.body).toMatchObject({ title: 'Only a title', content: '', priority: 'medium' })
+  })
+
+  it.each([
+    ['a missing title', {}],
+    ['a blank title', { title: '   ' }],
+    ['a title over the limit', { title: 'x'.repeat(TITLE_MAX + 1) }],
+  ])('rejects %s', async (_case, body) => {
+    const res = await request(appWith([])).post('/api/notes').send(body)
+    expect(res.status).toBe(400)
+    expect(res.body.fields.title).toBeDefined()
+  })
+
+  it('rejects an unknown priority', async () => {
+    const res = await request(appWith([]))
+      .post('/api/notes')
+      .send({ title: 'x', priority: 'urgent' })
+    expect(res.status).toBe(400)
+    expect(res.body.fields.priority).toBeDefined()
+  })
+
+  it('rejects a body sent without a JSON content type', async () => {
+    const res = await request(appWith([]))
+      .post('/api/notes')
+      .set('Content-Type', 'text/plain')
+      .send(JSON.stringify({ title: 'x' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('does not store anything when validation fails', async () => {
+    const app = appWith([])
+    await request(app).post('/api/notes').send({ title: '' })
+    const list = await request(app).get('/api/notes')
+    expect(list.body).toEqual([])
   })
 })
